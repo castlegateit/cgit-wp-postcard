@@ -30,19 +30,30 @@ class Postcard
     public $detectName = 'postcard';
 
     /**
-     * Error template
+     * Form has errors?
      */
-    public $errorTemplate = '<span class="error">%s</span>';
+    private $hasErrors = false;
 
     /**
-     * Error message
+     * Error template
      */
-    public $errorMessage = false;
+    private $errorTemplate = '<span class="error">%s</span>';
 
     /**
      * Success message
      */
     public $successMessage = 'Your message has been sent. Thank you.';
+
+    /**
+     * Form error message
+     */
+    public $errorMessage = 'Your message contains errors. '
+        . 'Please correct them and try again.';
+
+    /**
+     * Field error message
+     */
+    public $errorMessageSingle = false;
 
     /**
      * Prevent client-side validation
@@ -68,8 +79,8 @@ class Postcard
         // Set default error format
         $this->form->errorTemplate = $this->errorTemplate;
 
-        if ($this->errorMessage) {
-            $this->form->errorMessage = $this->errorMessage;
+        if ($this->errorMessageSingle) {
+            $this->form->errorMessage = $this->errorMessageSingle;
         }
     }
 
@@ -116,10 +127,12 @@ class Postcard
     {
         // If form has been submitted successfully, return success message
         if ($this->form->submit()) {
-            return '<p>' . $this->successMessage . '</p>';
+            return '<div class="cgit-postcard-message success"><p>'
+                . $this->successMessage . '</p></div>';
         }
 
         $items = [];
+        $form = '';
         $novalidate = '';
 
         foreach (array_keys($this->fields) as $name) {
@@ -130,8 +143,15 @@ class Postcard
             $novalidate = ' novalidate="novalidate"';
         }
 
-        return '<form action="' . $this->action . '" method="post"'
+        if ($this->hasErrors) {
+            $form .= '<div class="cgit-postcard-message error><p>'
+                . $this->errorMessage . '</p></div>';
+        }
+
+        $form .= '<form action="' . $this->action . '" method="post"'
             . $novalidate . '>' . implode(PHP_EOL, $items) . '</form>';
+
+        return $form;
     }
 
     /**
@@ -149,6 +169,10 @@ class Postcard
 
         if (!isset($options['value'])) {
             $options['value'] = $this->form->value($name);
+        }
+
+        if ($options['error']) {
+            $this->hasErrors = true;
         }
 
         $field = new Field($options);

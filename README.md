@@ -18,17 +18,17 @@ The form `action` attribute. By default, this is blank and so the form submits t
 
 The name of the unique hidden field. By default, this is `postcard`.
 
-### `Cgit\Postcard->errorTemplate` ###
-
-Works as per `Cgit\Postman->errorTemplate`, but the default value is `<span class="error">%s</span>`.
-
-### `Cgit\Postcard->errorMessage` ###
-
-The default field error message. Equivalent to `Cgit\Postman->errorMessage`.
-
 ### `Cgit\Postcard->successMessage` ###
 
 Text to display when the form has submitted successfully. The default value is "Your message has been sent. Thank you.".
+
+### `Cgit\Postcard->errorMessage` ###
+
+Text to display above the form when one or more fields contain errors. The default value is "Your message contains errors. Please correct them and try again.".
+
+### `Cgit\Postcard->errorMessageSingle` ###
+
+The default field error message. Equivalent to `Cgit\Postman->errorMessage` and therefore can be overridden for each field.
 
 ### `Cgit\Postcard->novalidate` ###
 
