@@ -121,7 +121,8 @@ class Field
      */
     public function render()
     {
-        $method = 'render' . ucfirst(strtolower($this->options['type']));
+        $type = $this->options['type'];
+        $method = 'render' . ucfirst(strtolower($type));
 
         if (!method_exists($this, $method)) {
             $method = 'renderText';
@@ -131,7 +132,11 @@ class Field
 
         $this->$method();
 
-        return ob_get_clean();
+        $field = ob_get_clean();
+        $field = apply_filters('cgit_postcard_field', $field);
+        $field = apply_filters('cgit_postcard_field_' . $type, $field);
+
+        return $field;
     }
 
     /**

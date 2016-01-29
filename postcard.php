@@ -151,6 +151,8 @@ class Postcard
         $form .= '<form action="' . $this->action . '" method="post"'
             . $novalidate . '>' . implode(PHP_EOL, $items) . '</form>';
 
+        $form = apply_filters('cgit_postcard_form', $form);
+
         return $form;
     }
 

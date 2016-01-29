@@ -103,3 +103,9 @@ Alternatively, this form could be returned by any of the following:
     echo Cgit\Postcard::get('contact');
     echo cgit_postcard('contact');
     echo do_shortcode('[postcard id="contact"');
+
+## Filters ##
+
+*   `cgit_postcard_field` rendered HTML of all fields.
+*   `cgit_postcard_field_{$type}` rendered HTML of fields of type `$type`.
+*   `cgit_postcard_form` rendered HTML of the form.
