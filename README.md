@@ -78,6 +78,9 @@ The following will create the same form as the [example given for the Postman pl
     $form = new Cgit\Postcard('contact');
 
     $form->errorMessageSingle = 'That doesn\'t work';
+    $form->mailHeaders = [
+        'Reply-To': 'example@example.com'
+    ];
 
     $form->field('username', [
         'type' => 'text',
