@@ -81,26 +81,9 @@ class Postcard
         $this->id = $id;
         $this->form = new Postman();
 
-        // Set indicator field
+        // Set indicator field and update form settings
         $this->setConditions();
-
-        // Set default error format
-        $this->form->errorTemplate = $this->errorTemplate;
-
-        if ($this->errorMessageSingle) {
-            $this->form->errorMessage = $this->errorMessageSingle;
-        }
-
-        // Set mail settings and headers
-        $settings = ['to', 'from', 'subject', 'headers'];
-
-        foreach ($settings as $setting) {
-            $property = 'mail' . ucfirst(strtolower($setting));
-
-            if ($this->$property) {
-                $this->form->$property = $this->$property;
-            }
-        }
+        $this->updateSettings();
     }
 
     /**
@@ -144,6 +127,8 @@ class Postcard
      */
     public function render()
     {
+        $this->updateSettings();
+
         // If form has been submitted successfully, return success message
         if ($this->form->submit()) {
             return '<div class="cgit-postcard-message success"><p>'
@@ -215,6 +200,34 @@ class Postcard
 
             return $forms;
         });
+
+    }
+
+    /**
+     * Update form settings
+     *
+     * Sends settings from the Postcard instance to the Postman instance. Should
+     * be called before doing anything important with Postman.
+     */
+    private function updateSettings()
+    {
+        // Set error format
+        $this->form->errorTemplate = $this->errorTemplate;
+
+        if ($this->errorMessageSingle) {
+            $this->form->errorMessage = $this->errorMessageSingle;
+        }
+
+        // Set mail settings and headers
+        $settings = ['to', 'from', 'subject', 'headers'];
+
+        foreach ($settings as $setting) {
+            $property = 'mail' . ucfirst(strtolower($setting));
+
+            if ($this->$property) {
+                $this->form->$property = $this->$property;
+            }
+        }
     }
 
     /**
