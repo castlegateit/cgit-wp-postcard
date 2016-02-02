@@ -30,6 +30,10 @@ Text to display above the form when one or more fields contain errors. The defau
 
 The default field error message. Equivalent to `Cgit\Postman->errorMessage` and therefore can be overridden for each field.
 
+### `Cgit\Postman->mailTo`,`Cgit\Postman->mailFrom`, `Cgit\Postman->mailSubject`, and `Cgit\Postman->mailHeaders` ###
+
+Email settings and headers. These are passed directly to the Postman object.
+
 ### `Cgit\Postcard->novalidate` ###
 
 Set to `true` to add the `novalidate` attribute to the form. Useful if your custom validation differs significantly from the default HTML validation.

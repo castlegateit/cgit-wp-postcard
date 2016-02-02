@@ -66,6 +66,14 @@ class Postcard
     private $fields = [];
 
     /**
+     * Mail settings
+     */
+    public $mailTo;
+    public $mailFrom;
+    public $mailSubject;
+    public $mailHeaders = [];
+
+    /**
      * Constructor
      */
     public function __construct($id)
@@ -81,6 +89,17 @@ class Postcard
 
         if ($this->errorMessageSingle) {
             $this->form->errorMessage = $this->errorMessageSingle;
+        }
+
+        // Set mail settings and headers
+        $settings = ['to', 'from', 'subject', 'headers'];
+
+        foreach ($settings as $setting) {
+            $property = 'mail' . ucfirst(strtolower($setting));
+
+            if ($this->$property) {
+                $this->form->$property = $this->$property;
+            }
         }
     }
 
