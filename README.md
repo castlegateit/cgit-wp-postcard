@@ -73,7 +73,7 @@ The following will create the same form as the [example given for the Postman pl
 
     $form = new Cgit\Postcard('contact');
 
-    $form->errorMessage = 'That doesn\'t work';
+    $form->errorMessageSingle = 'That doesn\'t work';
 
     $form->field('username', [
         'type' => 'text',
@@ -86,7 +86,6 @@ The following will create the same form as the [example given for the Postman pl
         'required' => true,
         'validate' => [
             'type' => 'email',
-            'match' => 'confirm_email',
         ],
         'error' => 'Please enter a valid email address'
     ]);
@@ -102,7 +101,7 @@ Alternatively, this form could be returned by any of the following:
 
     echo Cgit\Postcard::get('contact');
     echo cgit_postcard('contact');
-    echo do_shortcode('[postcard id="contact"');
+    echo do_shortcode('[postcard id="contact"]');
 
 ## Filters ##
 
