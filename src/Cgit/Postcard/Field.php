@@ -1,6 +1,6 @@
 <?php
 
-namespace Cgit\PostcardPlugin;
+namespace Cgit\Postcard;
 
 /**
  * Assemble HTML form field

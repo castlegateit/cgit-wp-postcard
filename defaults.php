@@ -6,7 +6,9 @@
  * You can access this form via Cgit\Postcard::get(), the global cgit_postcard()
  * function, or the postcard shortcode.
  */
-$default = new Cgit\Postcard('default');
+use Cgit\Postcard;
+
+$default = new Postcard('default');
 
 $default->field('username', [
     'label' => 'Name',

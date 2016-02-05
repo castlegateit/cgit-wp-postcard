@@ -2,7 +2,7 @@
 
 namespace Cgit;
 
-use Cgit\PostcardPlugin\Field as Field;
+use Cgit\Postcard\Field;
 
 /**
  * Simple, pre-defined templates for Postman
