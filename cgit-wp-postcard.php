@@ -12,12 +12,15 @@ License: MIT
 
 */
 
+$plugin_file = __FILE__;
+
+require __DIR__ . '/src/autoload.php';
+
 /**
  * Load plugin
  */
 add_action('plugins_loaded', function() {
-    include __DIR__ . '/src/autoload.php';
-    include __DIR__ . '/defaults.php';
-    include __DIR__ . '/functions.php';
-    include __DIR__ . '/shortcodes.php';
+    require __DIR__ . '/defaults.php';
+    require __DIR__ . '/functions.php';
+    require __DIR__ . '/shortcodes.php';
 }, 20);
