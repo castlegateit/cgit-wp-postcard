@@ -150,10 +150,14 @@ class Field
     {
         $this->attributes['class'] = 'text-input';
         $this->attributes['value'] = $this->options['value'];
+        $label_atts = $this->formatAttributes([
+            'class' => 'text-label',
+            'for' => $this->attributes['id'],
+        ]);
 
         ?>
         <div class="field">
-            <label for="<?= $this->attributes['id'] ?>">
+            <label <?= $label_atts ?>>
                 <?= $this->options['label'] ?>
             </label>
             <input <?= $this->getAttributes() ?> />
@@ -168,11 +172,16 @@ class Field
     private function renderTextarea()
     {
         $this->attributes['class'] = 'text-input';
+        $label_atts = $this->formatAttributes([
+            'class' => 'text-label',
+            'for' => $this->attributes['id'],
+        ]);
+
         unset($this->attributes['type']);
 
         ?>
         <div class="field">
-            <label for="<?= $this->attributes['id'] ?>">
+            <label <?= $label_atts ?>>
                 <?= $this->options['label'] ?>
             </label>
             <textarea <?= $this->getAttributes() ?>><?= $this->options['value'] ?></textarea>
@@ -208,7 +217,7 @@ class Field
                 $attributes = $this->formatAttributes($attributeValues);
 
                 ?>
-                <label>
+                <label class="checkbox-label">
                     <input <?= $attributes ?> />
                     <?= $label ?>
                     <?= $this->options['error'] ?>
@@ -248,7 +257,7 @@ class Field
                 $attributes = $this->formatAttributes($attributeValues);
 
                 ?>
-                <label>
+                <label class="radio-label">
                     <input <?= $attributes ?> />
                     <?= $label ?>
                     <?= $this->options['error'] ?>
@@ -267,12 +276,17 @@ class Field
     private function renderSelect()
     {
         $this->attributes['class'] = 'select-input';
+        $label_atts = $this->formatAttributes([
+            'class' => 'select-label',
+            'for' => $this->attributes['id'],
+        ]);
+
         unset($this->attributes['type']);
         unset($this->attributes['value']);
 
         ?>
         <div class="field">
-            <label for="<?= $this->attributes['id'] ?>">
+            <label <?= $label_atts ?>>
                 <?= $this->options['label'] ?>
             </label>
             <select <?= $this->getAttributes() ?>>
