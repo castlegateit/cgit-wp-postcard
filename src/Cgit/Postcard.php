@@ -148,7 +148,7 @@ class Postcard
         }
 
         if ($this->hasErrors) {
-            $form .= '<div class="cgit-postcard-message error><p>'
+            $form .= '<div class="cgit-postcard-message error"><p>'
                 . $this->errorMessage . '</p></div>';
         }
 

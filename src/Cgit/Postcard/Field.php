@@ -210,7 +210,10 @@ class Field
                     'class' => 'checkbox-input',
                 ];
 
-                if (in_array($value, $this->options['value'])) {
+                if (
+                    $this->options['value'] &&
+                    in_array($value, $this->options['value'])
+                ) {
                     $attributeValues['checked'] = 'checked';
                 }
 
