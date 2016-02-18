@@ -47,8 +47,7 @@ class Postcard
     /**
      * Form error message
      */
-    public $errorMessage = 'Your message contains errors. '
-        . 'Please correct them and try again.';
+    public $errorMessage = 'Your message contains errors. Please correct them and try again.';
 
     /**
      * Field error message
