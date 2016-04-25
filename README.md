@@ -42,18 +42,20 @@ Set to `true` to add the `novalidate` attribute to the form. Useful if your cust
 
 Adds a new field to the form. The `$options` array is a superset of the options for `Cgit\Postman->field()`. The _additional_ options are:
 
-    $options = [
-        'disabled',
-        'id',
-        'max',
-        'maxlength',
-        'min',
-        'minlength',
-        'name',
-        'pattern',
-        'placeholder',
-        'type', // HTML input type
-    ];
+~~~ php
+$options = [
+    'disabled',
+    'id',
+    'max',
+    'maxlength',
+    'min',
+    'minlength',
+    'name',
+    'pattern',
+    'placeholder',
+    'type', // HTML input type
+];
+~~~
 
 ### `Cgit\Postcard->render()` ###
 
@@ -67,48 +69,54 @@ Return the complete HTML output for an existing form by ID. The plugin includes 
 
 The plugin includes a function and a shortcode to return forms by ID. The following are all equivalent:
 
-    $foo = Cgit\Postcard::get('foo');
-    $foo = cgit_postcard('foo');
-    $foo = do_shortcode('[postcard id="foo"]');
+~~~ php
+$foo = Cgit\Postcard::get('foo');
+$foo = cgit_postcard('foo');
+$foo = do_shortcode('[postcard id="foo"]');
+~~~
 
 ## Example ##
 
 The following will create the same form as the [example given for the Postman plugin](http://github.com/castlegateit/cgit-wp-postman).
 
-    $form = new Cgit\Postcard('contact');
+~~~ php
+$form = new Cgit\Postcard('contact');
 
-    $form->errorMessageSingle = 'That doesn\'t work';
-    $form->mailHeaders = [
-        'Reply-To': 'example@example.com'
-    ];
+$form->errorMessageSingle = 'That doesn\'t work';
+$form->mailHeaders = [
+    'Reply-To': 'example@example.com'
+];
 
-    $form->field('username', [
-        'type' => 'text',
-        'label' => 'Name',
-    ]);
+$form->field('username', [
+    'type' => 'text',
+    'label' => 'Name',
+]);
 
-    $form->field('email', [
+$form->field('email', [
+    'type' => 'email',
+    'label' => 'Email',
+    'required' => true,
+    'validate' => [
         'type' => 'email',
-        'label' => 'Email',
-        'required' => true,
-        'validate' => [
-            'type' => 'email',
-        ],
-        'error' => 'Please enter a valid email address'
-    ]);
+    ],
+    'error' => 'Please enter a valid email address'
+]);
 
-    $form->field('submit', [
-        'type' => 'button',
-        'label' => 'Send Message',
-    ]);
+$form->field('submit', [
+    'type' => 'button',
+    'label' => 'Send Message',
+]);
 
-    echo $form->render();
+echo $form->render();
+~~~
 
 Alternatively, this form could be returned by any of the following:
 
-    echo Cgit\Postcard::get('contact');
-    echo cgit_postcard('contact');
-    echo do_shortcode('[postcard id="contact"]');
+~~~ php
+echo Cgit\Postcard::get('contact');
+echo cgit_postcard('contact');
+echo do_shortcode('[postcard id="contact"]');
+~~~
 
 ## Filters ##
 

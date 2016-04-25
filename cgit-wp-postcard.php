@@ -12,8 +12,6 @@ License: MIT
 
 */
 
-$plugin_file = __FILE__;
-
 require __DIR__ . '/src/autoload.php';
 
 /**
