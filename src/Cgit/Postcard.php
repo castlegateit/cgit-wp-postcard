@@ -194,12 +194,11 @@ class Postcard
      */
     private function update()
     {
-        add_filter('cgit_postcard', function($forms) {
-            $forms[$this->id] = $this->render();
+        add_filter('cgit_postcard', function($instances) {
+            $instances[$this->id] = $this;
 
-            return $forms;
+            return $instances;
         });
-
     }
 
     /**
@@ -234,6 +233,6 @@ class Postcard
      */
     public static function get($id = 'default')
     {
-        return apply_filters('cgit_postcard', [])[$id];
+        return apply_filters('cgit_postcard', [])[$id]->render();
     }
 }
