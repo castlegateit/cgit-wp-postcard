@@ -9,16 +9,23 @@ class Field
 {
     /**
      * Field options
+     *
+     * @var array
      */
-    private $options = [];
+    protected $options = [];
 
     /**
      * Input element attributes
+     *
+     * @var array
      */
-    private $attributes = [];
+    protected $attributes = [];
 
     /**
      * Constructor
+     *
+     * @param array $options
+     * @return void
      */
     public function __construct($options)
     {
@@ -32,8 +39,10 @@ class Field
 
     /**
      * Set input element ID
+     *
+     * @return void
      */
-    private function setId()
+    protected function setId()
     {
         if (isset($this->options['id'])) {
             return;
@@ -51,8 +60,10 @@ class Field
 
     /**
      * Set default input element attributes
+     *
+     * @return void
      */
-    private function setAttributes()
+    protected function setAttributes()
     {
         $standard = [
             'id',
@@ -88,8 +99,10 @@ class Field
 
     /**
      * Return formatted HTML attributes
+     *
+     * @return string
      */
-    private function getAttributes()
+    protected function getAttributes()
     {
         return $this->formatAttributes($this->attributes);
     }
@@ -100,8 +113,11 @@ class Field
      * Takes an associative array of attributes and returns the keys and values
      * as HTML attributes. Values can also be arrays, which will be converted
      * into a space-separated list on output.
+     *
+     * @param array $attr
+     * @return string
      */
-    private function formatAttributes($attr = [])
+    protected function formatAttributes($attr = [])
     {
         $items = [];
 
@@ -118,6 +134,8 @@ class Field
 
     /**
      * Render HTML output
+     *
+     * @return string
      */
     public function render()
     {
@@ -145,8 +163,10 @@ class Field
      * Because of their similar appearance and behaviour, this template is also
      * used for date, datetime, email, number, password, search, tel, time, and
      * url inputs.
+     *
+     * @return void
      */
-    private function renderText()
+    protected function renderText()
     {
         $this->attributes['class'] = 'text-input';
         $this->attributes['value'] = $this->options['value'];
@@ -168,8 +188,10 @@ class Field
 
     /**
      * Render textarea field
+     *
+     * @return void
      */
-    private function renderTextarea()
+    protected function renderTextarea()
     {
         $this->attributes['class'] = 'text-input';
         $label_atts = $this->formatAttributes([
@@ -192,8 +214,10 @@ class Field
 
     /**
      * Render checkbox field
+     *
+     * @return void
      */
-    private function renderCheckbox()
+    protected function renderCheckbox()
     {
         ?>
         <div class="field checkbox-field">
@@ -235,8 +259,10 @@ class Field
 
     /**
      * Render radio field
+     *
+     * @return void
      */
-    private function renderRadio()
+    protected function renderRadio()
     {
         ?>
         <div class="field radio-field">
@@ -275,8 +301,10 @@ class Field
 
     /**
      * Render select field
+     *
+     * @return void
      */
-    private function renderSelect()
+    protected function renderSelect()
     {
         $this->attributes['class'] = 'select-input';
         $label_atts = $this->formatAttributes([
@@ -317,8 +345,10 @@ class Field
 
     /**
      * Render hidden field
+     *
+     * @return void
      */
-    private function renderHidden()
+    protected function renderHidden()
     {
         ?>
         <input type="hidden" name="<?= $this->options['name'] ?>" value="<?= $this->options['value'] ?>" />
@@ -327,8 +357,10 @@ class Field
 
     /**
      * Render button field
+     *
+     * @return void
      */
-    private function renderButton()
+    protected function renderButton()
     {
         $attributes = $this->formatAttributes([
             'name' => $this->attributes['name'],
@@ -347,8 +379,10 @@ class Field
      *
      * For the purposes of this plugin, the submit field type is synonymous with
      * the button field type.
+     *
+     * @return void
      */
-    private function renderSubmit()
+    protected function renderSubmit()
     {
         $this->renderButton();
     }

@@ -1,46 +1,47 @@
 # Castlgate IT WP Postcard #
 
-Postcard provides simple, pre-defined templates for the [Postman](http://github.com/castlegateit/cgit-wp-postman) plugin. It doesn't give you much control over your HTML output, but it does make it quick and easy to generate a form to a Postman form.
+Postcard provides simple, pre-defined templates for the [Postman](http://github.com/castlegateit/cgit-wp-postman) plugin. It doesn't give you much control over your HTML output, but it does make it quick and easy to generate a Postman form.
 
 ## Postcard ##
 
-The `Cgit\Postcard` class is used to create the form.
+The `Cgit\Postcard` class is used to create the form. The constructor requires a single argument, which is used as a unique identifier for that form and which is shared with the `Postman` form:
 
-### `Cgit\Postcard->id` ###
+~~~ php
+$postcard = new \Cgit\Postcard('foo');
+~~~
 
-A unique identifier for this form. This is set in the constructor and is used to create a hidden field that can identified by `Cgit\Postman->detect()`.
+### Properties ###
 
-### `Cgit\Postcard->action` ###
+You can access the underlying `Postman` form instance, which includes the field data, errors, and ID:
 
-The form `action` attribute. By default, this is blank and so the form submits to the current URL.
+~~~ php
+echo $postcard->form->id;
+~~~
 
-### `Cgit\Postcard->detectName` ###
+You can set the form action, which defaults to the current page:
 
-The name of the unique hidden field. By default, this is `postcard`.
+~~~ php
+$postcard->action = 'http://www.example.com/';
+~~~
 
-### `Cgit\Postcard->successMessage` ###
+You can edit the form and default individual field messages and the field error message template (see [Postman](http://github.com/castlegateit/cgit-wp-postman)):
 
-Text to display when the form has submitted successfully. The default value is "Your message has been sent. Thank you.".
+~~~ php
+$postcard->errorMessage = 'Bad value';
+$postcard->errorTemplate = '<strong>%s</strong>';
+$postcard->formError = 'You did something wrong.';
+$postcard->formSuccess = 'Message sent.';
+~~~
 
-### `Cgit\Postcard->errorMessage` ###
+You can add the `novalidate` attribute to the HTML form:
 
-Text to display above the form when one or more fields contain errors. The default value is "Your message contains errors. Please correct them and try again.".
+~~~ php
+$postcard->novalidate = true;
+~~~
 
-### `Cgit\Postcard->errorMessageSingle` ###
+### Methods ###
 
-The default field error message. Equivalent to `Cgit\Postman->errorMessage` and therefore can be overridden for each field.
-
-### `Cgit\Postman->mailTo`,`Cgit\Postman->mailFrom`, `Cgit\Postman->mailSubject`, and `Cgit\Postman->mailHeaders` ###
-
-Email settings and headers. These are passed directly to the Postman object.
-
-### `Cgit\Postcard->novalidate` ###
-
-Set to `true` to add the `novalidate` attribute to the form. Useful if your custom validation differs significantly from the default HTML validation.
-
-### `Cgit\Postcard->field($name, $options)` ###
-
-Adds a new field to the form. The `$options` array is a superset of the options for `Cgit\Postman->field()`. The _additional_ options are:
+The `field()` method adds a new field to the form. The arguments for this method are a superset of those for the the `field` method in `Postman`. The _additional_ options are:
 
 ~~~ php
 $options = [
@@ -57,13 +58,17 @@ $options = [
 ];
 ~~~
 
-### `Cgit\Postcard->render()` ###
+Return the complete HTML output for the form:
 
-Return the complete HTML output for the form.
+~~~ php
+echo $postcard->render();
+~~~
 
-### `Cgit\Postcard::get($id = 'default')` ###
+Return the complete HTML output for an existing form by ID. The plugin includes a basic form called `default`:
 
-Return the complete HTML output for an existing form by ID. The plugin includes a basic form called `default`.
+~~~ php
+echo Postcard::get($id);
+~~~
 
 ## Function and shortcode ##
 
@@ -80,19 +85,19 @@ $foo = do_shortcode('[postcard id="foo"]');
 The following will create the same form as the [example given for the Postman plugin](http://github.com/castlegateit/cgit-wp-postman).
 
 ~~~ php
-$form = new Cgit\Postcard('contact');
+$card = new Cgit\Postcard('contact');
 
-$form->errorMessageSingle = 'That doesn\'t work';
-$form->mailHeaders = [
+$card->errorMessage = 'That doesn\'t work';
+$card->form->mailerSettings['headers'] = [
     'Reply-To': 'example@example.com'
 ];
 
-$form->field('username', [
+$card->field('username', [
     'type' => 'text',
     'label' => 'Name',
 ]);
 
-$form->field('email', [
+$card->field('email', [
     'type' => 'email',
     'label' => 'Email',
     'required' => true,
@@ -102,12 +107,13 @@ $form->field('email', [
     'error' => 'Please enter a valid email address'
 ]);
 
-$form->field('submit', [
+$card->field('submit', [
     'type' => 'button',
     'label' => 'Send Message',
+    'exclude' => true,
 ]);
 
-echo $form->render();
+echo $card->render();
 ~~~
 
 Alternatively, this form could be returned by any of the following:
@@ -123,3 +129,33 @@ echo do_shortcode('[postcard id="contact"]');
 *   `cgit_postcard_field` rendered HTML of all fields.
 *   `cgit_postcard_field_{$type}` rendered HTML of fields of type `$type`.
 *   `cgit_postcard_form` rendered HTML of the form.
+
+## Custom field HTML ##
+
+The recommended way of writing a form with custom HTML is to use [Postman](http://github.com/castlegateit/cgit-wp-postman) directly. However, it is possible to customize the HTML output of Postcard by extending the `Field` class and telling your `Postcard` instance to use that instead:
+
+~~~ php
+use Cgit\Postcard\Field;
+
+class Foo extends Field
+{
+    protected function renderText()
+    {
+        // new text field method
+    }
+}
+
+$postcard->fieldClass = 'Foo';
+~~~
+
+## Changes since version 2.0 ##
+
+*   The `Postcard` class now provides access to the `form` property, which is the `Postman` instance, allowing more detailed control over form settings.
+
+*   The error message properties have been renamed for better compatibility with Postman. The `errorMessage` property now means the same thing in both plugins.
+
+*   The error template is now available via the `errorTemplate` property.
+
+*   The mailer properties have been removed. You can now edit these directly via the `Postman` instance stored in the `form` property.
+
+*   The `Field` class can now be extended or replaced.

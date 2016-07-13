@@ -10,97 +10,121 @@ use Cgit\Postcard\Field;
 class Postcard
 {
     /**
-     * Unique identifier for this form
+     * Postman object instance
+     *
+     * @var \Cgit\Postman
      */
-    public $id;
+    public $form;
 
     /**
-     * Postman object instance
+     * Field class
+     *
+     * The fully qualified name of the class used to generate the HTML of each
+     * field. This can be overridden to change the HTML output.
+     *
+     * @var string
      */
-    private $form;
+    public $fieldClass = '\Cgit\Postcard\Field';
 
     /**
      * Default form action
+     *
+     * @var string
      */
     public $action = '';
 
     /**
-     * Hidden field name for unique ID
-     */
-    public $detectName = 'postcard';
-
-    /**
      * Form has errors?
+     *
+     * @var boolean
      */
-    private $hasErrors = false;
+    private $errors = false;
 
     /**
-     * Error template
+     * Default error message
+     *
+     * This is used by the Postman property of the same name. It can be
+     * overridden for each field using the "error" item in the array of field
+     * options.
+     *
+     * @var string
      */
-    private $errorTemplate = '<span class="error">%s</span>';
+    public $errorMessage = 'Invalid input';
 
     /**
-     * Success message
+     * Default error template
+     *
+     * This is used by the Postman property of the same name. See Postman for
+     * details.
+     *
+     * @var string
      */
-    public $successMessage = 'Your message has been sent. Thank you.';
+    public $errorTemplate = '<span class="error">%s</span>';
 
     /**
-     * Form error message
+     * Default form error message
+     *
+     * @var string
      */
-    public $errorMessage = 'Your message contains errors. Please correct them and try again.';
+    public $formError = 'Your message contains errors. Please correct them and try again.';
 
     /**
-     * Field error message
+     * Default form success message
+     *
+     * @var string
      */
-    public $errorMessageSingle = false;
+    public $formSuccess = 'Your message has been sent. Thank you.';
 
     /**
      * Prevent client-side validation
+     *
+     * @var boolean
      */
     public $novalidate = false;
 
     /**
      * Form fields
+     *
+     * @var array
      */
     private $fields = [];
 
     /**
-     * Mail settings
-     */
-    public $mailTo;
-    public $mailFrom;
-    public $mailSubject;
-    public $mailHeaders = [];
-
-    /**
      * Constructor
+     *
+     * Creates a new Postman instance, assigns the form ID, and creates the
+     * required hidden field to identify submissions from that form.
+     *
+     * @param string $id
+     * @return void
      */
     public function __construct($id)
     {
-        $this->id = $id;
-        $this->form = new Postman();
+        $this->form = new Postman($id);
 
-        // Set indicator field and update form settings
-        $this->setConditions();
-        $this->updateSettings();
+        // Create hidden input to identify form on submission
+        $this->field('postman_form_id', [
+            'type' => 'hidden',
+            'value' => $this->form->id,
+            'exclude' => true,
+        ]);
+
+        // Update form settings
+        $this->update();
     }
 
     /**
-     * Add default indicator field
+     * Update form settings
      *
-     * Use the unique ID set in the constructor to distinguish the current form
-     * data from any other requests.
+     * Sends settings from the Postcard instance to the Postman instance. Should
+     * be called before doing anything important with Postman.
+     *
+     * @return void
      */
-    private function setConditions()
+    private function update()
     {
-        $this->form->detect([
-            $this->detectName => $this->id,
-        ]);
-
-        $this->field($this->detectName, [
-            'type' => 'hidden',
-            'value' => $this->id,
-        ]);
+        $this->form->errorTemplate = $this->errorTemplate;
+        $this->form->errorMessage = $this->errorMessage;
     }
 
     /**
@@ -109,51 +133,76 @@ class Postcard
      * Appends field to array of fields and adds field to Postman form instance
      * with options. Also updates the version of the form available in the
      * shortcode.
+     *
+     * @param string $name
+     * @param array $options
+     * @return void
      */
     public function field($name, $options)
     {
-        // Indicator fields are not registered with Postman
-        if ($name != $this->detectName) {
-            $this->form->field($name, $options);
-        }
-
+        $this->form->field($name, $options);
         $this->fields[$name] = $options;
-        $this->update();
+        $this->save();
+    }
+
+    /**
+     * Save form
+     *
+     * This makes the form available via the cgit_postcard_forms filter, which
+     * is used in the global cgit_postcard() function and the postcard
+     * shortcode.
+     *
+     * @return void
+     */
+    private function save()
+    {
+        add_filter('cgit_postcard', function($instances) {
+            $instances[$this->form->id] = $this;
+
+            return $instances;
+        });
     }
 
     /**
      * Render HTML form output
+     *
+     * @return string
      */
     public function render()
     {
-        $this->updateSettings();
+        $this->update();
 
         // If form has been submitted successfully, return success message
         if ($this->form->submit()) {
             return '<div class="cgit-postcard-message success"><p>'
-                . $this->successMessage . '</p></div>';
+                . $this->formSuccess . '</p></div>';
         }
 
         $items = [];
         $form = '';
         $novalidate = '';
 
+        // Add each rendered field to the array of fields
         foreach (array_keys($this->fields) as $name) {
             $items[] = $this->renderField($name);
         }
 
+        // Add novalidate attribute
         if ($this->novalidate) {
             $novalidate = ' novalidate="novalidate"';
         }
 
-        if ($this->hasErrors) {
+        // If the form has been submitted with errors, add the error message
+        if ($this->errors) {
             $form .= '<div class="cgit-postcard-message error"><p>'
-                . $this->errorMessage . '</p></div>';
+                . $this->formError . '</p></div>';
         }
 
+        // Assemble the form element from the array of rendered fields
         $form .= '<form action="' . $this->action . '" method="post"'
             . $novalidate . '>' . implode(PHP_EOL, $items) . '</form>';
 
+        // Allow the rendered HTML to be filtered
         $form = apply_filters('cgit_postcard_form', $form);
 
         return $form;
@@ -164,12 +213,15 @@ class Postcard
      *
      * Add values and errors to the array of options and get the HTML from the
      * Field class.
+     *
+     * @param string $name
+     * @return string
      */
     private function renderField($name)
     {
         $options = $this->fields[$name];
         $options['name'] = $name;
-        $options['form'] = $this->id;
+        $options['form'] = $this->form->id;
         $options['error'] = $this->form->error($name);
 
         if (!isset($options['value'])) {
@@ -177,59 +229,20 @@ class Postcard
         }
 
         if ($options['error']) {
-            $this->hasErrors = true;
+            $this->errors = true;
         }
 
-        $field = new Field($options);
+        $field_class = $this->fieldClass;
+        $field = new $field_class($options);
 
         return $field->render();
     }
 
     /**
-     * Save form
-     *
-     * This makes the form available via the cgit_postcard_forms filter, which
-     * is used in the global cgit_postcard() function and the postcard
-     * shortcode.
-     */
-    private function update()
-    {
-        add_filter('cgit_postcard', function($instances) {
-            $instances[$this->id] = $this;
-
-            return $instances;
-        });
-    }
-
-    /**
-     * Update form settings
-     *
-     * Sends settings from the Postcard instance to the Postman instance. Should
-     * be called before doing anything important with Postman.
-     */
-    private function updateSettings()
-    {
-        // Set error format
-        $this->form->errorTemplate = $this->errorTemplate;
-
-        if ($this->errorMessageSingle) {
-            $this->form->errorMessage = $this->errorMessageSingle;
-        }
-
-        // Set mail settings and headers
-        $settings = ['to', 'from', 'subject', 'headers'];
-
-        foreach ($settings as $setting) {
-            $property = 'mail' . ucfirst(strtolower($setting));
-
-            if ($this->$property) {
-                $this->form->$property = $this->$property;
-            }
-        }
-    }
-
-    /**
      * Get a saved form
+     *
+     * @param string $id
+     * @return string
      */
     public static function get($id = 'default')
     {
