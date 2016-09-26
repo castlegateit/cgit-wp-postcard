@@ -129,6 +129,8 @@ echo do_shortcode('[postcard id="contact"]');
 *   `cgit_postcard_field` rendered HTML of all fields.
 *   `cgit_postcard_field_{$type}` rendered HTML of fields of type `$type`.
 *   `cgit_postcard_form` rendered HTML of the form.
+*   `cgit_postcard_label_suffix_optional` adds a string to the end of the label for optional fields; default empty.
+*   `cgit_postcard_label_suffix_required` adds a string to the end of the label for required fields; default `<span class="required">*</span>`.
 
 ## Custom field HTML ##
 

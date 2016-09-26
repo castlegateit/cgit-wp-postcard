@@ -59,6 +59,29 @@ class Field
     }
 
     /**
+     * Set label suffix
+     *
+     * @return void
+     */
+    protected function setLabelSuffix()
+    {
+        if (!isset($this->options['label'])) {
+            return;
+        }
+
+        $suffix = apply_filters('cgit_postcard_label_suffix_optional', '');
+
+        if (isset($this->options['required']) && $this->options['required']) {
+            $suffix = apply_filters(
+                'cgit_postcard_label_suffix_required',
+                '<span class="required">*</span>'
+            );
+        }
+
+        $this->options['label'] .= $suffix;
+    }
+
+    /**
      * Set default input element attributes
      *
      * @return void
@@ -139,6 +162,7 @@ class Field
      */
     public function render()
     {
+        $this->setLabelSuffix();
         $type = $this->options['type'];
         $method = 'render' . ucfirst(strtolower($type));
 
