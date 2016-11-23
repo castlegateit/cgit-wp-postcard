@@ -41,7 +41,7 @@ $postcard->novalidate = true;
 
 ### Methods ###
 
-The `field()` method adds a new field to the form. The arguments for this method are a superset of those for the the `field` method in `Postman`. The _additional_ options are:
+The `field()` and `fields()` method are for adding new field(s) to the form. The arguments for these method are a superset of those for the the `field` and `fields` method in `Postman`. The _additional_ options are:
 
 ~~~ php
 $options = [

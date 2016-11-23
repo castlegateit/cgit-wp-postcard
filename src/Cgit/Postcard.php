@@ -146,6 +146,19 @@ class Postcard
     }
 
     /**
+     * Add fields
+     *
+     * @param array $fields
+     * @return void
+     */
+    public function fields($fields)
+    {
+        foreach($fields as $name => $options) {
+            $this->field($name, $options);
+        }
+    }
+
+    /**
      * Save form
      *
      * This makes the form available via the cgit_postcard_forms filter, which
