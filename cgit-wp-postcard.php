@@ -5,7 +5,7 @@
 Plugin Name: Castlegate IT WP Postcard
 Plugin URI: http://github.com/castlegateit/cgit-wp-postcard
 Description: Quick and easy pre-defined templates for Postman.
-Version: 2.1
+Version: 2.3
 Author: Castlegate IT
 Author URI: http://www.castlegateit.co.uk/
 License: MIT
