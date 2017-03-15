@@ -18,11 +18,8 @@ class Plugin
      */
     private function __construct()
     {
-        // Register default form
-        $this->registerDefaults();
-
-        // Add shortcode
-        add_shortcode('postcard', [$this, 'shortcode']);
+        // Load the plugin after the Postman plugin
+        add_action('plugins_loaded', [$this, 'init'], 20);
     }
 
     /**
@@ -37,6 +34,60 @@ class Plugin
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Initialization
+     *
+     * @return void
+     */
+    public function init()
+    {
+        if (!$this->checkDeps()) {
+            return;
+        }
+
+        $this->registerDefaults();
+        add_shortcode('postcard', [$this, 'shortcode']);
+    }
+
+    /**
+     * Check dependencies
+     *
+     * Looks for plugin dependencies and automatically deactivates the plugin if
+     * any are missing.
+     *
+     * @return boolean
+     */
+    private function checkDeps()
+    {
+        if (!class_exists('Cgit\Postman')) {
+            require_once ABSPATH . '/wp-admin/includes/plugin.php';
+
+            $this->displayMessage('Postcard has been deactivated because the'
+                . ' Postman plugin is not active.', 'Warning');
+            deactivate_plugins(plugin_basename(CGIT_POSTCARD_PLUGIN_FILE));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Display an error message
+     *
+     * @return void
+     */
+    private function displayMessage($message, $heading = 'Error')
+    {
+        add_action('admin_notices', function () use ($message) {
+            ?>
+            <div class="error">
+                <p><strong><?= $heading ?>:</strong> <?= $message ?></p>
+            </div>
+            <?php
+        });
     }
 
     /**
