@@ -124,6 +124,40 @@ echo cgit_postcard('contact');
 echo do_shortcode('[postcard id="contact"]');
 ~~~
 
+## Captcha ##
+
+You can add a captcha to a Postcard form by using the following :
+
+~~~ php
+$card->enableCaptcha();
+~~~
+
+The order in which you declare this statement with regards to your form fields matters, as the fields, including the captcha, will be rendered in the order they are defined.
+
+
+For Example:
+
+~~~ php
+$card->field('email', [
+    'type' => 'email',
+    'label' => 'Email',
+    'required' => true,
+    'validate' => [
+        'type' => 'email',
+    ],
+    'error' => 'Please enter a valid email address'
+]);
+
+$card->enableCaptcha();
+
+$card->field('submit', [
+    'type' => 'button',
+    'label' => 'Send Message',
+    'exclude' => true,
+]);
+~~~
+
+
 ## Filters ##
 
 *   `cgit_postcard_field` rendered HTML of all fields.

@@ -222,6 +222,31 @@ class Postcard
     }
 
     /**
+     * Determines whether to perform Captcha logic
+     *
+     * If we're using Captcha logic, then begin that process.
+     * Necessary to duplicate this functionality in Postcard to
+     * satisfy the rendering engine.
+     */
+
+    public function enableCaptcha($id = 'g-recaptcha-response')
+    {
+        $this->form->hasCaptcha = $id;
+        $captcha = new $this->form->captcha;
+        $captcha->registerCaptcha($id);
+        $this->field('g-recaptcha', [
+            'type' => 'captcha',
+            'label' => $captchaID,
+            'required' => true,
+            'exclude' => true,
+            'validate' => [
+                'function' => array($captcha, 'submitRecaptcha')
+            ],
+            'error' => 'Please complete the recaptcha.'
+        ]);
+    }
+
+    /**
      * Render HTML field output
      *
      * Add values and errors to the array of options and get the HTML from the

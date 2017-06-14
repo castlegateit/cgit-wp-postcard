@@ -399,6 +399,22 @@ class Field
     }
 
     /**
+     * Render captcha field
+     *
+     * @return void
+     */
+
+    protected function renderCaptcha()
+    {
+        ?>
+        <div class="field button-field">
+            <div class="g-recaptcha" data-sitekey="<?=RECAPTCHA_SITE_KEY?>"></div>
+            <?= $this->options['error'] ?>
+        </div>
+        <?php
+    }
+
+    /**
      * Render submit field
      *
      * For the purposes of this plugin, the submit field type is synonymous with
