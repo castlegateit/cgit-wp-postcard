@@ -234,9 +234,9 @@ class Postcard
         $this->form->hasCaptcha = $id;
         $captcha = new $this->form->captcha;
         $captcha->registerCaptcha($id);
-        $this->field('g-recaptcha', [
+        $this->field($id, [
             'type' => 'captcha',
-            'label' => $captchaID,
+            'label' => $id,
             'required' => true,
             'exclude' => true,
             'validate' => [
