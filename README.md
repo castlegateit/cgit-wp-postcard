@@ -88,6 +88,7 @@ The following will create the same form as the [example given for the Postman pl
 $card = new Cgit\Postcard('contact');
 
 $card->errorMessage = 'That doesn\'t work';
+$card->form->mailerSettings['to'] = get_bloginfo('admin_email');
 $card->form->mailerSettings['headers'] = [
     'Reply-To': 'example@example.com'
 ];
