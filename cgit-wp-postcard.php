@@ -5,20 +5,24 @@
 Plugin Name: Castlegate IT WP Postcard
 Plugin URI: http://github.com/castlegateit/cgit-wp-postcard
 Description: Quick and easy pre-defined templates for Postman.
-Version: 2.4
+Version: 2.6
 Author: Castlegate IT
 Author URI: http://www.castlegateit.co.uk/
 License: MIT
 
 */
 
-use Cgit\Postcard\Plugin;
+if (!defined('ABSPATH')) {
+    wp_die('Access denied');
+}
 
-define('CGIT_POSTCARD_PLUGIN_FILE', __FILE__);
+define('CGIT_POSTCARD_PLUGIN', __FILE__);
 
-// Load plugin
-require __DIR__ . '/src/autoload.php';
-require __DIR__ . '/functions.php';
+add_action('cgit_postman_loaded', function () {
+    require_once __DIR__ . '/classes/autoload.php';
+    require_once __DIR__ . '/functions.php';
 
-// Initialization
-Plugin::getInstance();
+    $plugin = new \Cgit\Postcard\Plugin();
+
+    do_action('cgit_postcard_loaded');
+});
