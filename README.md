@@ -59,6 +59,8 @@ $options = [
 ];
 ~~~
 
+Note that the labels associated with individual checkbox or radio button options are not send in the message from Postman by default, so the values should be meaningful and human-readable.
+
 Return the complete HTML output for the form:
 
 ~~~ php
