@@ -54,6 +54,7 @@ $options = [
     'name',
     'pattern',
     'placeholder',
+    'options', // An array of [ value => labels ] for checkboxes, radio buttons and select elements
     'type', // HTML input type
 ];
 ~~~
