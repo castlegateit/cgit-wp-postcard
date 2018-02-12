@@ -170,6 +170,8 @@ $card->field('submit', [
 *   `cgit_postcard_label_suffix_optional` adds a string to the end of the label for optional fields; default empty.
 *   `cgit_postcard_label_suffix_required` adds a string to the end of the label for required fields; default `<span class="required">*</span>`.
 
+Please note that the `button` and `submit` field types will both produce buttons, but they use separate field type filters. If you registered a field with the type `button`, you should use the `cgit_postcard_field_button` filter. If you registered a field with the type `submit`, you should use the `cgit_postcard_field_submit` filter.
+
 ## Custom field HTML ##
 
 The recommended way of writing a form with custom HTML is to use [Postman](http://github.com/castlegateit/cgit-wp-postman) directly. However, it is possible to customize the HTML output of Postcard by extending the `Field` class and telling your `Postcard` instance to use that instead:
