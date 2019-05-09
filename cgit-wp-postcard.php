@@ -8,7 +8,7 @@ Description: Quick and easy pre-defined templates for Postman.
 Version: 2.6
 Author: Castlegate IT
 Author URI: http://www.castlegateit.co.uk/
-License: MIT
+License: AGPL
 
 */
 
